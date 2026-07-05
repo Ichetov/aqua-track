@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { AppError } from '../../shared/errors/AppError.js'
 import { StationModel } from '../stations/station.model.js'
 import { DefectModel } from './defect.model.js'
-import type { CreateDefectDto } from './defect.validation.js'
+import type { CreateDefectDto, UpdateDefectStatusDto } from './defect.validation.js'
 
 export async function createDefect(data: CreateDefectDto) {
   if (!mongoose.Types.ObjectId.isValid(data.stationId)) {
@@ -32,4 +32,31 @@ export async function getDefects() {
     .sort({ createdAt: -1 })
 
   return defects
+}
+
+
+export async function updateDefectStatus(
+  defectId: string ,
+  data: UpdateDefectStatusDto,
+) {
+  if (!mongoose.Types.ObjectId.isValid(defectId)) {
+    throw new AppError('Invalid defect id', 400)
+  }
+
+  const defect = await DefectModel.findByIdAndUpdate(
+    defectId,
+    {
+      status: data.status,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  ).populate('station')
+
+  if (!defect) {
+    throw new AppError('Defect not found', 404)
+  }
+
+  return defect
 }

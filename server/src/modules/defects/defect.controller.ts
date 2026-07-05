@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from 'express'
 
-import { createDefectSchema } from './defect.validation.js'
+import { createDefectSchema, updateDefectStatusSchema } from './defect.validation.js'
 import * as defectService from './defect.service.js'
+
 
 export async function createDefect(
   req: Request,
@@ -33,6 +34,33 @@ export async function getDefects(
     res.json({
       success: true,
       data: defects,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+type UpdateDefectStatusParams = {
+  defectId: string
+}
+
+export async function updateDefectStatus(
+  req: Request<UpdateDefectStatusParams>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const data = updateDefectStatusSchema.parse(req.body)
+
+    const defect = await defectService.updateDefectStatus(
+      req.params.defectId,
+      data,
+    )
+
+    res.json({
+      success: true,
+      data: defect,
     })
   } catch (error) {
     next(error)
