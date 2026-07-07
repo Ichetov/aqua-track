@@ -5,6 +5,7 @@ import { healthRouter } from './modules/health/health.routes.js'
 import { notFoundHandler } from './shared/middlewares/notFoundHandler.js'
 import { errorHandler } from './shared/middlewares/errorHandler.js'
 import { defectRouter } from './modules/defects/defect.routes.js'
+import { userRouter } from './modules/users/user.routes.js'
 
 export const app: Express = express()
 
@@ -14,7 +15,7 @@ app.use(express.json())
 app.use('/api/health', healthRouter)
 app.use('/api/stations', stationRouter)
 app.use('/api/defects', defectRouter)
-
+app.use('/api/users', userRouter)
 
 app.use(notFoundHandler)
 app.use(errorHandler)
