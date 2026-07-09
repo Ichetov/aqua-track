@@ -1,11 +1,22 @@
 import { Router } from 'express'
+
+import { requireAuth } from '../../shared/middlewares/requireAuth.js'
+import { requireRole } from '../../shared/middlewares/requireRole.js'
+import { createUser, getUsers } from './user.controller.js'
 import type { Router as ExpressRouter } from 'express'
-import {
-  createUser,
-  getUsers,
-} from './user.controller.js'
 
 export const userRouter: ExpressRouter = Router()
 
-userRouter.get('/', getUsers)
-userRouter.post('/', createUser)
+userRouter.get(
+  '/',
+  requireAuth,
+  requireRole('workshop_manager'),
+  getUsers,
+)
+
+userRouter.post(
+  '/',
+  requireAuth,
+  requireRole('workshop_manager'),
+  createUser,
+)
