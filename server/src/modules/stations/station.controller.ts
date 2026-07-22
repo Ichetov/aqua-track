@@ -1,5 +1,10 @@
-import type { Request, Response, NextFunction } from 'express'
+import type {
+  Request,
+  Response,
+  NextFunction,
+} from 'express'
 
+import { AppError } from '../../shared/errors/AppError.js'
 import { createStationSchema } from './station.validation.js'
 import * as stationService from './station.service.js'
 
@@ -28,7 +33,13 @@ export async function getStations(
   next: NextFunction,
 ) {
   try {
-    const stations = await stationService.getStations()
+    if (!req.user) {
+      throw new AppError('Authentication required', 401)
+    }
+
+    const stations = await stationService.getStations(
+      req.user,
+    )
 
     res.json({
       success: true,
