@@ -21,3 +21,10 @@ app.use('/api/auth', authRouter)
 
 app.use(notFoundHandler)
 app.use(errorHandler)
+
+
+
+
+
+
+
